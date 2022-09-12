@@ -1,3 +1,4 @@
+import { useForm } from 'react-hook-form'
 import { Play } from 'phosphor-react'
 
 import {
@@ -11,15 +12,26 @@ import {
 } from './styles'
 
 export function Home() {
+  const { register, handleSubmit, watch } = useForm()
+
+  function handleCreateNewCycle(data) {
+    console.log(data)
+  }
+
+  const task = watch('task')
+
+  const isSubmitDisabled = !task
+
   return (
     <HomeContainer>
-      <form>
+      <form onSubmit={handleSubmit(handleCreateNewCycle)}>
         <FormContainer>
           <label htmlFor="task">I Will work in</label>
           <TaskInput
             id="task"
             list="task-suggestions"
             placeholder="Give your project a name"
+            {...register('task')}
           />
 
           <datalist id="task-suggestions">
@@ -37,6 +49,9 @@ export function Home() {
             step={5}
             min={0}
             max={60}
+            {...register('minutesAmount', {
+              valueAsNumber: true,
+            })}
           />
 
           <span>minutes.</span>
@@ -50,7 +65,7 @@ export function Home() {
           <span>0</span>
         </CountdownContainer>
 
-        <StartCountdownButton type="submit" disabled>
+        <StartCountdownButton type="submit" disabled={isSubmitDisabled}>
           <Play size={24} />
           Start
         </StartCountdownButton>
